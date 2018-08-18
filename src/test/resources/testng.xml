@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite1" parallel="false" thread-count="1">
+    <listeners>
+        <listener class-name="InterceptorTestHttpHandler" />
+        <listener class-name="TestResultListenerHttpHandler" />
+    </listeners>
+    <test name="AutoTestTester02">
+    <parameter name="username" value="test02" />
+    <parameter name="password" value="test02" />
+        <classes>
+            <!--<class name="testcase.HTTPTest">-->
+            <!--<methods>-->
+                <!--<include name="MysqlQueryTestCasesInfo"/>-->
+            <!--</methods>-->
+            <!--</class>-->
+            <class name="TestMybatis"/>
+            <!--<class name="testcase.RetrievingDescription03"/>-->
+            <!--<class name="testcase.RetrievingDescription"/>-->
+            <!--<class name="testcase.WedDriverTest">-->
+                <!--&lt;!&ndash;<methods>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<include name="ChromeHeadlessTest"/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<include name="WebUITest" />&ndash;&gt;-->
+                <!--&lt;!&ndash;</methods>&ndash;&gt;-->
+            <!--</class>-->
+        </classes>
+    </test>
+    <!--<test name = "WebDriver">-->
+        <!--<groups>-->
+            <!--<run>-->
+                <!--&lt;!&ndash;<exclude name="brokenTests"  />&ndash;&gt;-->
+                <!--<include name="ChromeHeadless"  />-->
+                <!--<include name="WebUI"  />-->
+            <!--</run>-->
+        <!--</groups>-->
+    <!--</test>-->
+</suite>

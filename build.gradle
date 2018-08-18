@@ -1,0 +1,50 @@
+group 'TestNGServiceLoader'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+jar.baseName = 'TestNGExtendService'
+jar.version = 'Http.1.1'
+
+repositories {
+    maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
+    //maven{url "http://146.122.219.146:8081/repository/maven-public/"}
+    //mavenCentral()
+}
+
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.4.5'
+    compile 'org.testng:testng:6.8'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+    // https://mvnrepository.com/artifact/com.google.auto.service/auto-service
+    compile group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc2'
+    compile group: 'org.eclipse.jetty', name: 'jetty-client', version: '9.4.8.v20171121'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.38'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+
+
+    //compile files('./TestNGExtendService-1.1.jar')
+
+}
+task runTests(type: JavaExec) {
+    main = 'org.testng.TestNG'
+    classpath = files("./TestNGExtendService-1.1.jar",
+            project.sourceSets.main.compileClasspath,
+            project.sourceSets.test.compileClasspath,
+            project.sourceSets.main.runtimeClasspath,
+            project.sourceSets.test.runtimeClasspath)
+    args = ["./src/test/resources/testng.xml"]
+}
+test {
+
+    useTestNG{
+        suites "src/test/resources/testng.xml"
+    }
+
+}
+
+

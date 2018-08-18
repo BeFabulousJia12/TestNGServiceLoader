@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.TestCaseManagementMapper">
+
+    <sql id="Column_list">
+        test_name,
+        feature_name,
+        test_method_name,
+        test_steps
+    </sql>
+
+    <sql id="Column_list_TestResults">
+        test_name,
+        test_method_name,
+        test_status,
+        timestamp,
+        failed_reason
+    </sql>
+
+    <sql id="Column_list_TestResultSummary">
+        test_name,
+        passed,
+        failed,
+        ignored,
+        duration,
+        timestamp
+    </sql>
+
+    <resultMap id="ListTest" type="model.TestCaseInfo" >
+        <id  column="test_name" property="testName" />
+        <result  column="feature_name" property="featureName" />
+        <result column="test_method_name" property="testMethod" />
+        <result column="test_steps" property="testSteps" />
+    </resultMap>
+
+    <resultMap id="ListTestResults" type="model.TestResults" >
+        <id  column="test_name" property="testName" />
+        <result  column="test_method_name" property="testMethodName" />
+        <result column="test_status" property="testStatus" />
+        <result column="timestamp" property="timestamp" />
+        <result column="failed_reason" property="failedReason"/>
+    </resultMap>
+
+    <resultMap id="ListTestResultSummary" type="model.TestResultSummary" >
+        <id  column="test_name" property="testName" />
+        <result  column="passed" property="passed" />
+        <result column="failed" property="failed" />
+        <result column="ignored" property="ignored"/>
+        <result column="duration" property="duration"/>
+        <result column="timestamp" property="timestamp" />
+    </resultMap>
+
+    <select id="getAllTestCaseInfo" resultMap="ListTest">
+        SELECT
+        <include refid="Column_list" />
+        FROM test_cases
+    </select>
+
+    <select id="getTestResults" resultMap="ListTestResults">
+        SELECT
+        <include refid="Column_list_TestResults" />
+        FROM test_results WHERE test_name =#{testName} AND timestamp = #{timestamp}
+    </select>
+
+    <select id="getLatestTestResultSummary" resultMap="ListTestResultSummary">
+        SELECT
+        m1.* from test_result_summary m1 left join test_result_summary m2 on (m1.test_name = m2.test_name and m1.id &lt;m2.id) where m2.id is null order by `timestamp` desc
+    </select>
+
+    <select id="insertTestCase" parameterType="model.TestCaseInfo">
+        INSERT INTO test_cases (<include refid="Column_list" />)
+        VALUES (#{testName},#{featureName},#{testMethod},#{testSteps})
+    </select>
+
+    <select id="insertTestCaseByBatch" parameterType="model.TestCaseInfo">
+        INSERT INTO test_cases (<include refid="Column_list" />)
+        VALUES
+        <foreach collection="list" item="testCaseInfo" separator=",">
+            (#{testCaseInfo.testName},#{testCaseInfo.featureName},#{testCaseInfo.testMethod},#{testCaseInfo.testSteps})
+        </foreach>
+    </select>
+
+    <delete id="deleteTestCaseByTestName" parameterType="java.lang.String">
+        DELETE FROM test_cases WHERE test_name = #{name}
+    </delete>
+
+    <select id="insertTestResultsByBatch" parameterType="model.TestResults">
+        INSERT INTO test_results (<include refid="Column_list_TestResults" />)
+        VALUES
+        <foreach collection="list" item="testResult" separator=",">
+            (#{testResult.testName},#{testResult.testMethodName},#{testResult.testStatus},#{testResult.timestamp},#{testResult.failedReason})
+        </foreach>
+    </select>
+
+    <select id="insertTestResultSummary" parameterType="model.TestResultSummary">
+        INSERT INTO test_result_summary (<include refid="Column_list_TestResultSummary" />)
+        VALUES (#{testName},#{passed},#{failed},#{ignored},#{duration},#{timestamp})
+    </select>
+
+
+</mapper>
