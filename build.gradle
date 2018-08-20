@@ -3,15 +3,101 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 
+
 sourceCompatibility = 1.8
 
 jar.baseName = 'TestNGExtendService'
 jar.version = 'Http.1.1'
 
 repositories {
+    mavenCentral()
     maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
     //maven{url "http://146.122.219.146:8081/repository/maven-public/"}
-    //mavenCentral()
+
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+    }
+}
+apply plugin: 'io.codearte.nexus-staging'
+
+
+if (project.hasProperty('release')) {
+
+    subprojects {
+
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
+
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives javadocJar, sourcesJar
+        }
+    }
+
+    allprojects {
+        apply plugin: 'signing'
+        apply plugin: 'maven'
+
+        // Signature of artifacts
+        signing {
+            sign configurations.archives
+        }
+
+        // OSSRH publication
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    // POM signature
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                    // Target repository
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+                    pom.project {
+                        name project.name
+                        description project.description
+                        packaging 'jar'
+                        url 'https://github.com/BeFabulousJia12/TestNGServiceLoader'
+
+                        scm {
+                            connection 'scm:git:https://github.com/BeFabulousJia12/TestNGServiceLoader.git'
+                            developerConnection 'scm:git:git@github.com:TestNGServiceLoader.git'
+                            url 'https://github.com/BeFabulousJia12/TestNGServiceLoader.git'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The Apache License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id = 'BeFabulousJia12'
+                                name = 'You Jia'
+                                email = '542082848@qq.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }
 
 

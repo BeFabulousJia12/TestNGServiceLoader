@@ -24,7 +24,6 @@ import java.util.List;
 @AutoService(ITestNGListener.class)
 public class InterceptorTestHttpHandler implements IMethodInterceptor {
     private boolean descriptionsRecord = false;
-    private static String baseURL = "http://139.24.217.56:8081/";
     public static String token="";
     Timestamp currentTime = new Timestamp(new Date().getTime());
 
@@ -39,6 +38,7 @@ public class InterceptorTestHttpHandler implements IMethodInterceptor {
             try {
                 httpclient.start();
                 ContentResponse response = null;
+                String baseURL = context.getCurrentXmlTest().getParameter("testServer");
                 //login to test platform to get token
                 JSONObject user = new JSONObject();
                 //hardcode normal user info.

@@ -8,6 +8,7 @@
     <test name="AutoTestTester02">
     <parameter name="username" value="test02" />
     <parameter name="password" value="test02" />
+    <parameter name="testServer" value="http://139.24.217.56:8081/" />
         <classes>
             <!--<class name="testcase.HTTPTest">-->
             <!--<methods>-->

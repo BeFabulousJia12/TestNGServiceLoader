@@ -26,7 +26,6 @@ import java.util.concurrent.TimeoutException;
 public class TestResultListenerHttpHandler extends TestListenerAdapter {
     String durationKey = "duration";
     String countKey = "count";
-    private static String baseURL = "http://139.24.217.56:8081/db/";
     ContentResponse response = null;
     //Get current timestamp
     Timestamp currentTimestamp = new Timestamp(new Date().getTime());
@@ -39,6 +38,7 @@ public class TestResultListenerHttpHandler extends TestListenerAdapter {
         long totalDuration = 0;
         try {
             httpclient.start();
+            String baseURL = testContext.getCurrentXmlTest().getParameter("testServer");
             token = InterceptorTestHttpHandler.token;
             String url = baseURL + "TestResultSummary";
             String username = testContext.getCurrentXmlTest().getParameter("username");
@@ -67,6 +67,7 @@ public class TestResultListenerHttpHandler extends TestListenerAdapter {
     private Map testResultsHandler(List<ITestResult> iTestResults, ITestContext testContext, HttpClient httpclient,String user)  {
         ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
         JSONArray testResultsList = new JSONArray();
+        String baseURL = testContext.getCurrentXmlTest().getParameter("testServer");
         String url = baseURL + "TestResults";
 
         long duration = 0;
