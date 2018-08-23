@@ -1,13 +1,13 @@
-group 'TestNGServiceLoader'
-version '1.0-SNAPSHOT'
+//group 'TestNGServiceLoader'
+//version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 
 
 sourceCompatibility = 1.8
 
-jar.baseName = 'TestNGExtendService'
-jar.version = 'Http.1.1'
+//jar.baseName = 'TestNGExtendService'
+//jar.version = 'Http.1.1'
 
 repositories {
     mavenCentral()
@@ -25,7 +25,6 @@ buildscript {
     }
 }
 apply plugin: 'io.codearte.nexus-staging'
-
 
 if (project.hasProperty('release')) {
 
@@ -54,7 +53,28 @@ if (project.hasProperty('release')) {
         signing {
             sign configurations.archives
         }
+        group = "com.github.BeFabulousJia12"
+        archivesBaseName = "TestNGServiceLoader"
+        version = "1.0.6"
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+            options.addStringOption('encoding', 'UTF-8')
+            options.addStringOption('charSet', 'UTF-8')
+            options.tags = ['Author','Date']
+        }
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
 
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives javadocJar, sourcesJar
+        }
         // OSSRH publication
         uploadArchives {
             repositories {
@@ -63,6 +83,9 @@ if (project.hasProperty('release')) {
                     beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                     // Target repository
                     repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+                    snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
                         authentication(userName: ossrhUsername, password: ossrhPassword)
                     }
                     pom.project {
@@ -111,6 +134,7 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-client', version: '9.4.8.v20171121'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.38'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+
 
 
     //compile files('./TestNGExtendService-1.1.jar')

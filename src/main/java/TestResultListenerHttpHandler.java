@@ -40,7 +40,7 @@ public class TestResultListenerHttpHandler extends TestListenerAdapter {
             httpclient.start();
             String baseURL = testContext.getCurrentXmlTest().getParameter("testServer");
             token = InterceptorTestHttpHandler.token;
-            String url = baseURL + "TestResultSummary";
+            String url = baseURL + "db/TestResultSummary";
             String username = testContext.getCurrentXmlTest().getParameter("username");
             JSONObject testResultSummary = new JSONObject();
             Map passedResult = testResultsHandler(getPassedTests(),testContext,httpclient,username);
@@ -68,7 +68,7 @@ public class TestResultListenerHttpHandler extends TestListenerAdapter {
         ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
         JSONArray testResultsList = new JSONArray();
         String baseURL = testContext.getCurrentXmlTest().getParameter("testServer");
-        String url = baseURL + "TestResults";
+        String url = baseURL + "db/TestResults";
 
         long duration = 0;
 
