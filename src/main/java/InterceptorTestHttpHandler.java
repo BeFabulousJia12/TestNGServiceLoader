@@ -38,12 +38,12 @@ public class InterceptorTestHttpHandler implements IMethodInterceptor {
             try {
                 httpclient.start();
                 ContentResponse response = null;
-                String baseURL = context.getCurrentXmlTest().getParameter("testServer");
+                String baseURL = System.getenv("testserver");
                 //login to test platform to get token
                 JSONObject user = new JSONObject();
                 //hardcode normal user info.
-                user.put("username",context.getCurrentXmlTest().getParameter("username"));
-                user.put("password",context.getCurrentXmlTest().getParameter("password"));
+                user.put("username",System.getenv("loginname"));
+                user.put("password",System.getenv("loginpassword"));
                 user.put("timestamp",currentTime);
                 String encodeContent = new DESEncrypt().encode("9ba45bfd50061212328ec03adfef1b6e75","utf-8",user.toString());
                 response = httpclient.newRequest(baseURL + "login").method(HttpMethod.POST).content(new BytesContentProvider(encodeContent.getBytes()),"application/json;charset=UTF-8").send();
