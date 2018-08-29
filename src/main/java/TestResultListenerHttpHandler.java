@@ -32,36 +32,38 @@ public class TestResultListenerHttpHandler extends TestListenerAdapter {
     private static String token ="";
 
     @Override
-    public void onFinish(ITestContext testContext){
-        System.out.println("Test Results Http handler");
-        HttpClient httpclient = new HttpClient();
-        long totalDuration = 0;
-        try {
-            httpclient.start();
-            String baseURL = System.getenv("testserver");
-            token = InterceptorTestHttpHandler.token;
-            String url = baseURL + "db/TestResultSummary";
-            String username = System.getenv("loginname");
-            JSONObject testResultSummary = new JSONObject();
-            Map passedResult = testResultsHandler(getPassedTests(),testContext,httpclient,username);
-            Map failedResult = testResultsHandler(getFailedTests(),testContext,httpclient,username);
-            Map ignoredResult = testResultsHandler(getSkippedTests(),testContext,httpclient,username);
-            totalDuration = (long)passedResult.get(durationKey) + (long)failedResult.get(durationKey) + (long)ignoredResult.get(durationKey);
-            testResultSummary.put("testName",testContext.getName());
-            testResultSummary.put("passed",passedResult.get(countKey));
-            testResultSummary.put("failed",failedResult.get(countKey));
-            testResultSummary.put("ignored",ignoredResult.get(countKey));
-            testResultSummary.put("duration",totalDuration);
-            testResultSummary.put("timestamp",currentTimestamp);
-            testResultSummary.put("user",username);
+    public void onFinish(ITestContext testContext) {
+        if (System.getenv("testserver") != null && System.getenv("loginname") != null && System.getenv("loginpassword") != null) {
+            System.out.println("Test Results Http handler");
+            HttpClient httpclient = new HttpClient();
+            long totalDuration = 0;
+            try {
+                httpclient.start();
+                String baseURL = System.getenv("testserver");
+                token = InterceptorTestHttpHandler.token;
+                String url = baseURL + "db/TestResultSummary";
+                String username = System.getenv("loginname");
+                JSONObject testResultSummary = new JSONObject();
+                Map passedResult = testResultsHandler(getPassedTests(), testContext, httpclient, username);
+                Map failedResult = testResultsHandler(getFailedTests(), testContext, httpclient, username);
+                Map ignoredResult = testResultsHandler(getSkippedTests(), testContext, httpclient, username);
+                totalDuration = (long) passedResult.get(durationKey) + (long) failedResult.get(durationKey) + (long) ignoredResult.get(durationKey);
+                testResultSummary.put("testName", testContext.getName());
+                testResultSummary.put("passed", passedResult.get(countKey));
+                testResultSummary.put("failed", failedResult.get(countKey));
+                testResultSummary.put("ignored", ignoredResult.get(countKey));
+                testResultSummary.put("duration", totalDuration);
+                testResultSummary.put("timestamp", currentTimestamp);
+                testResultSummary.put("user", username);
 
-            response = httpclient.newRequest(url).method(HttpMethod.POST).header("Authorization",token).content(new BytesContentProvider(testResultSummary.toString().getBytes()),"application/json;charset=UTF-8").send();
-            System.out.println(response.getStatus());
-        } catch (Exception e) {
-            e.printStackTrace();
+                response = httpclient.newRequest(url).method(HttpMethod.POST).header("Authorization", token).content(new BytesContentProvider(testResultSummary.toString().getBytes()), "application/json;charset=UTF-8").send();
+                System.out.println(response.getStatus());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
-
-
     }
 
     private Map testResultsHandler(List<ITestResult> iTestResults, ITestContext testContext, HttpClient httpclient,String user)  {

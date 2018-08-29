@@ -30,11 +30,12 @@ public class InterceptorTestHttpHandler implements IMethodInterceptor {
 
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-        System.out.println("Test Case Http handler!");
+
         HttpClient httpclient = new HttpClient();
 
         // List<IMethodInstance> result = new ArrayList<IMethodInstance>();
-        if (descriptionsRecord == false){
+        if (descriptionsRecord == false && System.getenv("testserver")!=null&&System.getenv("loginname")!=null&&System.getenv("loginpassword")!=null){
+            System.out.println("Test Case Http handler!");
             try {
                 httpclient.start();
                 ContentResponse response = null;
