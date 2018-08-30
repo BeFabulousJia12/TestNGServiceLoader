@@ -55,7 +55,7 @@ if (project.hasProperty('release')) {
         }
         group = "com.github.BeFabulousJia12"
         archivesBaseName = "TestNGServiceLoader"
-        version = "1.0.8"
+        version = "1.0.9"
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none', '-quiet')
             options.addStringOption('encoding', 'UTF-8')

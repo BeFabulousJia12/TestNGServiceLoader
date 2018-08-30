@@ -58,7 +58,7 @@ public class InterceptorTestHttpHandler implements IMethodInterceptor {
                     testCaseInfo.put("testMethod",method.getMethod().getConstructorOrMethod().getName());
                     testCaseInfo.put("testSteps",testMethod.description());
                     testCaseInfo.put("testName",context.getName());
-                    testCaseInfo.put("user",context.getCurrentXmlTest().getParameter("username"));
+                    testCaseInfo.put("user",System.getenv("loginname"));
                     testCaseInfos.add(testCaseInfo);
                 }
                 response = httpclient.newRequest(url).method(HttpMethod.POST).header("Authorization",token).content(new BytesContentProvider(testCaseInfos.toString().getBytes()),"application/json;charset=UTF-8").send();
